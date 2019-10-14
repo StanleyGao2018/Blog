@@ -1,2 +1,3 @@
 # Blog
-# MyFirst time try to use Djange to new my own blog
+
+## MyFirst time try to use Django to new my own blog
