@@ -16,10 +16,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.urls import include
+from article import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
     #新增代码，配置app的url
-    path('article', include('article.urls', namespace='article')),
+    path('article_list', views.article_list, name='article_list'),
 ]
