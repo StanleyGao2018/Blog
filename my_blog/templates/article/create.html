@@ -1,0 +1,31 @@
+<!-- 继承base.html文件 -->
+{% extends "base.html" %}{% load staticfiles %}
+<!-- 写入base文件中的title -->
+{% block title %}写文章{% endblock title %}
+<!-- 写入content -->
+{%block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+                <br>
+                <!-- 提交文章的表单 -->
+                <form method="POST" action=".">
+                    <!-- Django需要post数据需要用csrf_token -->
+                    {% csrf_token %}
+                    <!-- 文章标题 -->
+                    <div class="form-group">
+                        <label for="title">文章标题</label>
+                        <input type="text" class="form-control" id="title" name="title">
+                    </div>
+                    <!-- 文章正文 -->
+                    <div class="form-group">
+                        <label for="body">文章正文</label>
+                        <textarea type="text" class="form-control" name="body" id="body" rows="12"></textarea>
+                    </div>
+                    <!-- 提交按钮 -->
+                    <button type="submit" class="btn btn-primary">完成</button>
+                </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

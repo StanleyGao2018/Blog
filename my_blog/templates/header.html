@@ -7,7 +7,12 @@
         <!-- 导航入口 -->
         <div>
             <ul class="navbar-nav">
-                <li class="nav-item"> 
+                <!-- 写文章 -->
+                <li class="nav-item">
+                        <a class="nav-link" href="{% url 'article:article_create' %}">写文章</a> 
+                </li>
+                <!-- 返回文章列表 -->
+                <li class="nav-item">
                     <a class="nav-link" href="{% url 'article:article_list' %}">文章</a>
                 </li>
             </ul>
