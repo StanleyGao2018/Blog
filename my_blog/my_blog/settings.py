@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     #新增 article代码 激活app
     'article',
+    'userprofile',
 ]
 
 MIDDLEWARE = [

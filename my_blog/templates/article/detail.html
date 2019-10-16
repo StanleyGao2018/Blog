@@ -18,6 +18,7 @@
         <div class="col-12 alert alert-success">作者： {{ article.author }}
             <!-- <a href="#" onclick="confirm_delete()">删除文章</a> -->
             <a href="#" onclick="confirm_safe_delete()">删除文章</a>
+            <a href="{% url "article:article_update" article.id %}">编辑文章</a>
             <form 
                 style="display:none;" 
                 id="safe_delete"

@@ -15,6 +15,21 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'article:article_list' %}">文章</a>
                 </li>
+                <!-- 登录 -->
+                {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle='dropdown' aria-haspopup="true" aria-expanded="false">
+                            {{ user.username }}
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a href="{% url "userprofile:logout" %}" class="dropdown-tiem">退出登录</a>
+                        </div>
+                    </li>
+                {% else %}
+                    <li>
+                        <a href="{% url 'userprofile:login' %}" class="nav-link">登录</a>
+                    </li>
+                {% endif %}
             </ul>
         </div>
 

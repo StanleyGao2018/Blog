@@ -22,4 +22,5 @@ urlpatterns = [
 
     #新增代码，配置app的url
     path('article/', include('article.urls', namespace='article')),
-]
+    # 配置用户
+    path('userprofile/', include('userprofile.urls', namespace='userprofile')),]

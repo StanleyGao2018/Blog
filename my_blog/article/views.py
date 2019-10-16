@@ -77,4 +77,29 @@ def article_safe_delete(request, id):
         return redirect("article:article_list")
     else:
         return HttpResponse("仅允许post请求")
-            
+
+# 修改文章
+def article_update(request, id):
+    """
+    更新文章视图函数
+    通过post方法提交表单，更新title body
+    get方法进入初始表单页面
+    id: 文章的id
+    """
+    article = ArticlePost.objects.get(id=id)
+    if request.method == "POST":
+        article_post_form = ArticlePostForm(data=request.POST)
+        # 判断是否满足模型要求
+        if article_post_form.is_valid():
+            article.title = request.POST['title']
+            article.body = request.POST['body']
+            article.save()
+            # 返回id
+            return redirect("article:article_detail", id=id)
+        else:
+            return HttpResponse("比但内容有无，请重新填写。")
+    
+    else:
+        article_post_form = ArticlePostForm()
+        context = { 'article': article, 'article_post_form':article_post_form } 
+        return render(request, 'article/update.html', context)
