@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     #新增 article代码 激活app
     'article',
     'userprofile',
+    'password_reset'
 ]
 
 MIDDLEWARE = [
@@ -122,3 +123,16 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 STATIC_URL = '/static/'
+
+# SMTP服务器，改为邮箱的smtp
+EMAIL_HOST = 'smtp.qq.com'
+# 改为自己的邮箱名
+EMAIL_HOST_USER = '2421688910@qq.com'
+# 自己的邮箱密码
+EMAIL_HOST_PASSWORD = 'gao2421688910'
+# 发送邮箱的端口
+EMAIL_PORT = 25
+# 是否使用TLS
+EMAIL_USE_TLS = True
+# 默认发件人
+DEFAULT_FROM_EMAIL = 'Stanley 的博客 <2421688910@qq.com>'

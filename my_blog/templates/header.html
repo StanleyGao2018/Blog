@@ -22,7 +22,8 @@
                             {{ user.username }}
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a href="{% url "userprofile:logout" %}" class="dropdown-tiem">退出登录</a>
+                            <a href="#" onclick="user_delete()" class="dropdown-item">删除用户</a>
+                            <a href="{% url "userprofile:logout" %}" class="dropdown-item">退出登录</a>
                         </div>
                     </li>
                 {% else %}
@@ -35,3 +36,25 @@
 
     </div>
 </nav>
+
+
+<!-- 删除用户弹窗 -->
+{% if user.is_authenticated %}
+<form style="display: none;" id="user_delete" method="POST" action="{% url 'userprofile:delete' user.id %}">
+    {% csrf_token %}
+    <button type="submit">发送</button>
+</form>
+    <script>
+        function user_delete(){
+            // 调用layer弹窗组件
+            layer.open({
+                title: "确认删除",
+                content: "确认删除用户资料吗？",
+                yes: function(index,layer){
+                    $('form#user_delete button').click();
+                    layer.close(index);
+                },
+            })
+        }
+    </script>
+{% endif %}
