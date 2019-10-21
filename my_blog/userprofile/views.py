@@ -73,21 +73,28 @@ def user_delete(request, id):
 def profile_edit(request, id):
     user = User.objects.get(id=id)
     #profile = Profile.objects.get(user_id=id)
-    if Profile.objects.filter(user_id=id).exist():
+    # try:
+    #     profile = Profile.objects.create(user=user)
+    # except Profile.objects.filter(user_id=id).exist():
+    #     profile = Profile.objects.create(user_id=id)
+    if Profile.objects.filter(user_id=id).exists():
         profile = Profile.objects.get(user_id=id)
     else:
         profile = Profile.objects.create(user=user)
         
     if request.method == 'POST':
         # 验证修改数据者,是否为本人
-        return HttpResponse("你没有权限修改此用户信息.")
+        if request.user != user:
+            return HttpResponse("你没有权限修改此用户信息.")
 
-        profile_form = ProfileForm(data=request.POST)
+        profile_form = ProfileForm(request.POST, request.FILES)
         if profile_form.is_valid():
             # 取得清洗后的合法数据
             profile_cd = profile_form.cleaned_data
-            profile.phone = profile_cd['photo']
+            profile.phone = profile_cd['phone']
             profile.bio = profile_cd['bio']
+            if 'avatar' in request.FILES:
+                profile.avatar = profile_cd["avatar"]
             profile.save()
             # 带参数的redirect
             return redirect("userprofile:edit", id=id)

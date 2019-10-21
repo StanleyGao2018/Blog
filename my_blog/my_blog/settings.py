@@ -123,7 +123,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 STATIC_URL = '/static/'
-
+# 媒体文件位置
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 # SMTP服务器，改为邮箱的smtp
 EMAIL_HOST = 'smtp.qq.com'
 # 改为自己的邮箱名
