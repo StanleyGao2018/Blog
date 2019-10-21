@@ -21,19 +21,35 @@ def article_list(request):
             "--load-plugins=pylint_django"
         ],}
     """
-    article_list = ArticlePost.objects.all()
-    # 每页先显示一篇文章
-    paginator = Paginator(article_list,1)
-    # 获取url
+    # article_list = ArticlePost.objects.all()
+    # # 每页先显示一篇文章
+    # paginator = Paginator(article_list,1)
+    # # 获取url
+    # page = request.GET.get('page')
+    # # 将导航的对象想相应页码内容返回给article
+    # articles = paginator.get_page(page)
+
+    # #需要传递给Template的对象
+    # context = {'articles': articles}
+
+    # #render函数： 载入模板 返回context对象
+    # return render(request, 'article/list.html', context)
+
+    # 重写articlelist
+    if request.GET.get('order') == 'total_views':
+        article_list = ArticlePost.objects.all().order_by('-total_views')
+        order = 'total_views'
+    else:
+        article_list = ArticlePost.objects.all()
+        order = 'normal'
+
+    paginator = Paginator(article_list, 3)
     page = request.GET.get('page')
-    # 将导航的对象想相应页码内容返回给article
     articles = paginator.get_page(page)
 
-    #需要传递给Template的对象
-    context = {'articles': articles}
-
-    #render函数： 载入模板 返回context对象
+    context = { 'article': articles, 'order': order }
     return render(request, 'article/list.html', context)
+
 
 #文章详情
 def article_detail(request, id):
@@ -86,6 +102,8 @@ def article_create(request):
 def article_safe_delete(request, id):
     if request.method == 'POST':
         article = ArticlePost.objects.get(id=id)
+        if request.user !=  article.author:
+            return HttpResponse("抱歉，你无法删除这篇文章。")
         # 调用delte方法
         article.delete()
         return redirect("article:article_list")
