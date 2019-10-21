@@ -16,9 +16,11 @@
         <!-- 标题及作者 -->
         <h1 class="col-12 mt-4 mb-4">{{ article.title }}</h1>
         <div class="col-12 alert alert-success">作者： {{ article.author }}
+            {% if user == article.author %}
             <!-- <a href="#" onclick="confirm_delete()">删除文章</a> -->
-            <a href="#" onclick="confirm_safe_delete()">删除文章</a>
-            <a href="{% url "article:article_update" article.id %}">编辑文章</a>
+                <a href="#" onclick="confirm_safe_delete()">删除文章</a>
+                <a href="{% url "article:article_update" article.id %}">编辑文章</a>
+            {% endif %}
             <form 
                 style="display:none;" 
                 id="safe_delete"
@@ -28,6 +30,9 @@
                 {% csrf_token %}
                 <button type="submit">发送</button>
             </form>
+            <div>
+                浏览：{{ article.total_views }}
+            </div>
         </div>
         <!-- 文章正文 -->
         <div class="col-12">

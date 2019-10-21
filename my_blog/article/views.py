@@ -7,6 +7,7 @@ import markdown
 #导入数据模型ArticlePost 
 from .models import ArticlePost
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator 
 
 def article_list(request):
     #取出所有博客文章
@@ -20,7 +21,13 @@ def article_list(request):
             "--load-plugins=pylint_django"
         ],}
     """
-    articles = ArticlePost.objects.all()
+    article_list = ArticlePost.objects.all()
+    # 每页先显示一篇文章
+    paginator = Paginator(article_list,1)
+    # 获取url
+    page = request.GET.get('page')
+    # 将导航的对象想相应页码内容返回给article
+    articles = paginator.get_page(page)
 
     #需要传递给Template的对象
     context = {'articles': articles}
@@ -31,6 +38,10 @@ def article_list(request):
 #文章详情
 def article_detail(request, id):
     article = ArticlePost.objects.get(id=id)
+    # 浏览量加一
+    article.total_views += 1
+    article.save(update_fields=['total_views'])
+
     # 将markdown语法渲染成html
     article.body = markdown.markdown(article.body,
     extensions=[
@@ -82,6 +93,7 @@ def article_safe_delete(request, id):
         return HttpResponse("仅允许post请求")
 
 # 修改文章
+@login_required(login_url='/userprofile/login/')
 def article_update(request, id):
     """
     更新文章视图函数
@@ -90,6 +102,10 @@ def article_update(request, id):
     id: 文章的id
     """
     article = ArticlePost.objects.get(id=id)
+
+    # 过滤非作者用户
+    if request.user != article.author:
+        return HttpResponse("sorry, 你无权修改这篇文章。")
     if request.method == "POST":
         article_post_form = ArticlePostForm(data=request.POST)
         # 判断是否满足模型要求
