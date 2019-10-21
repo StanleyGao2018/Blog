@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 import markdown
 #导入数据模型ArticlePost 
 from .models import ArticlePost
+from django.contrib.auth.decorators import login_required
 
 def article_list(request):
     #取出所有博客文章
@@ -43,6 +44,7 @@ def article_detail(request, id):
 
 
 # 写文章的视图
+@login_required(login_url='/userprofile/login/')
 def article_create(request):
     # 判断用户是否提交数据
     if request.method == "POST":
@@ -52,12 +54,13 @@ def article_create(request):
         if article_post_form.is_valid():
             # 保存数据但不提交到数据库
             new_article = article_post_form.save(commit=False)
-            # 指定id=1的用户为作者
-            new_article.author = User.objects.get(id=1)
+            # 指定当前的登录用户为作者
+            new_article.author = User.objects.get(id=request.user.id)
             # 保存文章到数据库
             new_article.save()
             # 返回文章列表
             return redirect("article:article_list")
+            
         else:
             return HttpResponse("表单内容有误，请重新输入。")
     else:
@@ -103,3 +106,5 @@ def article_update(request, id):
         article_post_form = ArticlePostForm()
         context = { 'article': article, 'article_post_form':article_post_form } 
         return render(request, 'article/update.html', context)
+
+

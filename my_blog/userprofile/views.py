@@ -72,8 +72,12 @@ def user_delete(request, id):
 @login_required(login_url='/userprofile/login/')
 def profile_edit(request, id):
     user = User.objects.get(id=id)
-    profile = Profile.objects.get(user_id=id)
-
+    #profile = Profile.objects.get(user_id=id)
+    if Profile.objects.filter(user_id=id).exist():
+        profile = Profile.objects.get(user_id=id)
+    else:
+        profile = Profile.objects.create(user=user)
+        
     if request.method == 'POST':
         # 验证修改数据者,是否为本人
         return HttpResponse("你没有权限修改此用户信息.")
