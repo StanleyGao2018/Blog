@@ -4,11 +4,13 @@ from .forms import ArticlePostForm
 from django.contrib.auth.models import User
 #引入markdown
 import markdown
+from markdown.extensions import Extension
 from django.db.models import Q
 #导入数据模型ArticlePost 
 from .models import ArticlePost
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator 
+from comment.models import Comment
 
 def article_list(request):
     #取出所有博客文章
@@ -71,19 +73,25 @@ def article_list(request):
 #文章详情
 def article_detail(request, id):
     article = ArticlePost.objects.get(id=id)
+
+    # 取出评论
+    comments = Comment.objects.filter(article=id)
     # 浏览量加一
     article.total_views += 1
     article.save(update_fields=['total_views'])
 
     # 将markdown语法渲染成html
-    article.body = markdown.markdown(article.body,
+    md = markdown.Markdown(
     extensions=[
         # 缩写表格等常用扩展
         'markdown.extensions.extra',
         # 语法高亮扩展
         'markdown.extensions.codehilite',
+        # 目录扩展
+        'markdown.extensions.toc',
     ])
-    context = {'article': article }
+    article.body = md.convert(article.body)
+    context = { 'article': article, 'toc': md.toc, 'comments': comments }
     return render(request, 'article/detail.html', context)
 
 

@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.auth.models import User
 #timezone 
 from django.utils import timezone
+from django.urls import reverse
 
 # Blog article data models
 class ArticlePost(models.Model):
@@ -49,3 +50,6 @@ class ArticlePost(models.Model):
         # 返回标题
         return self.title
 
+    # 获取文章地址
+    def get_absolute_url(self):
+        return reverse('article:article_detail', args=[self.id])

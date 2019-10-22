@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     #新增 article代码 激活app
     'article',
     'userprofile',
-    'password_reset'
+    'password_reset',
+    'comment',
 ]
 
 MIDDLEWARE = [
@@ -110,7 +111,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
