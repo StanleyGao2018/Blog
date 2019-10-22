@@ -4,6 +4,7 @@ from .forms import ArticlePostForm
 from django.contrib.auth.models import User
 #引入markdown
 import markdown
+from django.db.models import Q
 #导入数据模型ArticlePost 
 from .models import ArticlePost
 from django.contrib.auth.decorators import login_required
@@ -23,7 +24,7 @@ def article_list(request):
     """
     # article_list = ArticlePost.objects.all()
     # # 每页先显示一篇文章
-    # paginator = Paginator(article_list,1)
+    # paginator = Paginator(article_list,3)
     # # 获取url
     # page = request.GET.get('page')
     # # 将导航的对象想相应页码内容返回给article
@@ -36,18 +37,34 @@ def article_list(request):
     # return render(request, 'article/list.html', context)
 
     # 重写articlelist
-    if request.GET.get('order') == 'total_views':
-        article_list = ArticlePost.objects.all().order_by('-total_views')
-        order = 'total_views'
+    search = request.GET.get('search')
+    order = request.GET.get('order')
+    if search:
+        # 用Q对象进行联合搜索
+        if order == 'total_views':
+            article_list = ArticlePost.objects.filter(
+                Q(title__icontains=search) |
+                Q(body__icontains=search)
+            ).order_by('-total_views')
+        else:
+            article_list = ArticlePost.objects.filter(
+                Q(title__icontains=search) |
+                Q(body__icontains=search)
+            )
     else:
-        article_list = ArticlePost.objects.all()
-        order = 'normal'
+        search = ''
+        if order == 'total_views':
+            article_list = ArticlePost.objects.all().order_by('-total_views')
+        else:
+            article_list = ArticlePost.objects.all()
 
     paginator = Paginator(article_list, 3)
     page = request.GET.get('page')
     articles = paginator.get_page(page)
 
-    context = { 'article': articles, 'order': order }
+    # 修改此行
+    context = { 'articles': articles, 'order': order, 'search': search }
+
     return render(request, 'article/list.html', context)
 
 
