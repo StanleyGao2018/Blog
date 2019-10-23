@@ -18,14 +18,14 @@
                 {% if order != 'total_views' %}
                     <span style="color: gray;">最新</span>
                 {% else %}
-                    <a href="{% url 'article:article_list' %}?search={{ search }}">最新</a>
+                    <a href="{% url 'article:article_list' %}?search={{ search }}&tag={{ tag }}">最新</a>
                 {% endif %}
             </li>
             <li class="breadcrumb-item">
                 {% if order == 'total_views' %}
                     <span style="color: gray;">最热</span>
                 {% else %}
-                    <a href="{% url 'article:article_list' %}?order=total_views&search={{ search }}">最热</a>
+                    <a href="{% url 'article:article_list' %}?order=total_views&search={{ search }}&tag={{ tag }}">最热</a>
                 {% endif %}
             </li>
         </ol>
@@ -51,27 +51,79 @@
     {% endif %}
 
     <div class="row mt-2">
+        <!-- 重写列表 -->
         {% for article in articles %}
-        <div class="col-4 mb-4">
-            <div class="card h-100">
+            <div class="col-12">
+                <!-- 栏目 -->
+                {% if article.column %}
+                    <button type="button" class="btn btn-sm mb-2
+                            {% if article.column.title == 'Django' %}
+                            btn-success
+                            {% elif article.column.title == 'Java' %}
+                                btn-danger
+                            {% elif article.column.title == 'HTML' %}
+                                btn-warning 
+                            {% endif %} 
+                        "
+                    >
+                        {{ article.column }}
+                    </button>
+                {% endif %}
+                <!-- 标签 -->
+                <span>
+                    {% for tag in article.tags.all %}
+                        <a href="{% url 'article:article_list' %}?tag={{ tag }}" class="badge badge-secondary">
+                            {{ tag }}
+                        </a>
+                    {% endfor %}
+                </span>
                 <!-- 标题 -->
-                <h4 class="card-hearder">{{ article.title }}</h4>
+                <h4>
+                    <b>
+                        <a href="{% url 'article:article_detail' article.id %}" style="color: black;">
+                            {{ article.title }}
+                        </a>
+                    </b>
+                </h4>
                 <!-- 摘要 -->
-                <div class="card-body">
-                    <p class="card-text">{{ article.body|slice:'100' }}...</p>
+                <div>
+                    <p style="color:grey;">
+                        {{ article.body|slice:'100' }}...
+                    </p>
                 </div>
                 <!-- 注脚 -->
-                <div class="card-footer">
-                    <a href="{% url 'article:article_detail' article.id %}" class="btn btn-primary">阅读本文</a>
-                    <!-- 浏览量 -->
-                    <span>
-                        <small class="col align-self-end" style="color: gray;">
-                            浏览：{{ article.total_views }}
-                        </small>
+                <p>
+                    <!-- 附加信息 -->
+                    <span style="color: green;">
+                        {{ article.total_views }} 浏览&nbsp;&nbsp;
                     </span>
-                </div>
+                    <span style="color: blue;">
+                        {{ article.created|date:'Y-m-d' }} 发布&nbsp;&nbsp;&nbsp;
+                    </span>
+                    <span style="color: darkred;">
+                        {{ article.update|date:'Y-m-d' }} 更新
+                    </span>
+                </p>
+                <hr>
+                <!-- <div class="card h-100">
+                    标题
+                    <h4 class="card-hearder">{{ article.title }}</h4>
+                    摘要
+                    <div class="card-body">
+                        <p class="card-text">{{ article.body|slice:'100' }}...</p>
+                    </div>
+                    注脚
+                    <div class="card-footer">
+                        <a href="{% url 'article:article_detail' article.id %}" class="btn btn-primary">阅读本文</a>
+                        浏览量
+                        <span>
+                            <small class="col align-self-end" style="color: gray;">
+                                浏览：{{ article.total_views }}
+                            </small>
+                        </span>
+                    </div>
+                </div> -->
             </div>
-        </div>
         {% endfor %}
     </div>
     <!-- 页码导航 -->
@@ -80,11 +132,11 @@
             <span class="step-links">
                 <!-- 如果不是第一页显示上翻按钮 -->
                 {% if articles.has_previous %}
-                    <a href="?page=1&order={{ order }}&search={{ search }}" class="btn btn-success">
+                    <a href="?page=1&order={{ order }}&search={{ search }}&tag={{ tag }}" class="btn btn-success">
                         &laquo; 1
                     </a>
                     <span>...</span>
-                    <a href="?page={{ articles.previous_page_number }}&order={{ order }}&search={{ search }}" class="btn btn-secondary">
+                    <a href="?page={{ articles.previous_page_number }}&order={{ order }}&search={{ search }}&tag={{ tag }}" class="btn btn-secondary">
                         {{ articles.previous_page_number }}
                     </a>
                 {% endif %}
@@ -96,11 +148,11 @@
 
                 <!-- 如果不是最末页，显示下翻按钮 -->
                 {% if articles.has_next %}
-                    <a href="?page={{ articles.next_page_number }}&order={{ order }}&search={{ search }}" class="btn btn_secondary">
+                    <a href="?page={{ articles.next_page_number }}&order={{ order }}&search={{ search }}&tag={{ tag }}" class="btn btn_secondary">
                         {{ articles.next_page_number }}
                     </a>
                     <span>...</span>
-                    <a href="?page={{ articles.paginator.num_pages }}&order={{ order }}&search={{ search }}" class="btn btn-success">
+                    <a href="?page={{ articles.paginator.num_pages }}&order={{ order }}&search={{ search }}&tag={{ tag }}" class="btn btn-success">
                         {{ articles.paginator.num_pages }} &raquo;
                     </a>
                 {% endif %}

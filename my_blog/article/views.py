@@ -7,10 +7,11 @@ import markdown
 from markdown.extensions import Extension
 from django.db.models import Q
 #导入数据模型ArticlePost 
-from .models import ArticlePost
+from .models import ArticlePost, ArticleColumn
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator 
 from comment.models import Comment
+
 
 def article_list(request):
     #取出所有博客文章
@@ -41,31 +42,52 @@ def article_list(request):
     # 重写articlelist
     search = request.GET.get('search')
     order = request.GET.get('order')
+    column = request.GET.get('column')
+    tag = request.GET.get('tag')
+
+    # 初始化查询
+    article_list = ArticlePost.objects.all()
+
     if search:
         # 用Q对象进行联合搜索
-        if order == 'total_views':
-            article_list = ArticlePost.objects.filter(
-                Q(title__icontains=search) |
-                Q(body__icontains=search)
-            ).order_by('-total_views')
-        else:
-            article_list = ArticlePost.objects.filter(
-                Q(title__icontains=search) |
-                Q(body__icontains=search)
-            )
-    else:
+        article_list = article_list.filter(
+            Q(title__icontains=search)|
+            Q(body__icontains=search)
+        )
+    else :
         search = ''
-        if order == 'total_views':
-            article_list = ArticlePost.objects.all().order_by('-total_views')
-        else:
-            article_list = ArticlePost.objects.all()
+    # 栏目查询
+    if column is not None and column.isdigit():
+        article_list = article_list.filter(column=column)
+    # 标签查询
+    if tag and tag != 'None':
+        article_list = article_list.filter(tags__name__in=[tag])
+    # 查询排序
+    if order == 'total_views':
+        article_list = article_list.order_by('-total_views')
+    #     if order == 'total_views':
+    #         article_list = ArticlePost.objects.filter(
+    #             Q(title__icontains=search) |
+    #             Q(body__icontains=search)
+    #         ).order_by('-total_views')
+    #     else:
+    #         article_list = ArticlePost.objects.filter(
+    #             Q(title__icontains=search) |
+    #             Q(body__icontains=search)
+    #         )
+    # else:
+    #     search = ''
+    #     if order == 'total_views':
+    #         article_list = ArticlePost.objects.all().order_by('-total_views')
+    #     else:
+    #         article_list = ArticlePost.objects.all()
 
     paginator = Paginator(article_list, 3)
     page = request.GET.get('page')
     articles = paginator.get_page(page)
 
     # 修改此行
-    context = { 'articles': articles, 'order': order, 'search': search }
+    context = { 'articles': articles, 'order': order, 'search': search, 'column': column, 'tag': tag }
 
     return render(request, 'article/list.html', context)
 
@@ -108,8 +130,13 @@ def article_create(request):
             new_article = article_post_form.save(commit=False)
             # 指定当前的登录用户为作者
             new_article.author = User.objects.get(id=request.user.id)
+            # 将栏目加入
+            if request.POST['column'] != 'none':
+                new_article.column = ArticleColumn.objects.get(id=request.POST['column'])
             # 保存文章到数据库
             new_article.save()
+            # 保存tags多对多的关系
+            article_post_form.save_m2m()
             # 返回文章列表
             return redirect("article:article_list")
             
@@ -118,8 +145,9 @@ def article_create(request):
     else:
         # 创建表单实例
         article_post_form = ArticlePostForm()
+        columns = ArticleColumn.objects.all()
         # 赋值上下文
-        context = {'article_post_form': article_post_form}
+        context = {'article_post_form': article_post_form, 'columns': columns}
         # 返回模板
         return render(request, 'article/create.html', context)
 
@@ -155,6 +183,10 @@ def article_update(request, id):
         if article_post_form.is_valid():
             article.title = request.POST['title']
             article.body = request.POST['body']
+            if request.POST['column'] != 'none':
+                article.column = ArticleColumn.objects.get(id=request.POST['column'])
+            else:
+                article.column = None
             article.save()
             # 返回id
             return redirect("article:article_detail", id=id)
@@ -163,7 +195,8 @@ def article_update(request, id):
     
     else:
         article_post_form = ArticlePostForm()
-        context = { 'article': article, 'article_post_form':article_post_form } 
+        columns = ArticleColumn.objects.all()
+        context = { 'article': article, 'article_post_form':article_post_form, 'columns': columns } 
         return render(request, 'article/update.html', context)
 
 

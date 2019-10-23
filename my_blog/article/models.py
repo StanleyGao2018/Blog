@@ -4,7 +4,17 @@ from django.contrib.auth.models import User
 #timezone 
 from django.utils import timezone
 from django.urls import reverse
+from taggit.managers import TaggableManager
 
+class ArticleColumn(models.Model):
+    # 栏目
+    title = models.CharField(max_length=100, blank=True)
+    # 创建时间
+    created = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.title
+        
 # Blog article data models
 class ArticlePost(models.Model):
     """文章作者
@@ -32,9 +42,13 @@ class ArticlePost(models.Model):
     """
     update = models.DateTimeField(auto_now=True)
 
+    # 文章标签
+    tags = TaggableManager(blank=True)
+
     # 文章浏览量
     total_views = models.PositiveIntegerField(default=0)
-
+    # 文章栏目一对多外键
+    column = models.ForeignKey(ArticleColumn, null=True, blank=True, on_delete=models.CASCADE, related_name='article')
     """
     内部类 class meta 用于给 model 定义元数据
     """
@@ -42,7 +56,6 @@ class ArticlePost(models.Model):
         #ordering 指定模型返回的数据
         # -created 表明数据应该用倒序排列
         ordering = ('-created',)
-
     """
     函数 __str__ 定义当调用对象的str() 方法时 返回值
     """
@@ -53,3 +66,4 @@ class ArticlePost(models.Model):
     # 获取文章地址
     def get_absolute_url(self):
         return reverse('article:article_detail', args=[self.id])
+

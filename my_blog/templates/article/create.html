@@ -10,12 +10,28 @@
                 <br>
                 <!-- 提交文章的表单 -->
                 <form method="POST" action=".">
+
                     <!-- Django需要post数据需要用csrf_token -->
                     {% csrf_token %}
                     <!-- 文章标题 -->
                     <div class="form-group">
                         <label for="title">文章标题</label>
                         <input type="text" class="form-control" id="title" name="title">
+                    </div>
+                    <!-- 文章栏目 -->
+                    <div class="form-group">
+                        <label for="column">栏目</label>
+                        <select name="column" id="column" class="form-control">
+                                <option value="none">请选择栏目..</option>
+                            {% for column in columns %}
+                                <option value="{{ column.id }}">{{ column }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <!-- 文章标签 -->
+                    <div class="form-group">
+                        <label for="tags">标签</label>
+                        <input type="text" class="form-control col-3" id="tags" name="tags">
                     </div>
                     <!-- 文章正文 -->
                     <div class="form-group">

@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'userprofile',
     'password_reset',
     'comment',
+    'taggit',
 ]
 
 MIDDLEWARE = [
