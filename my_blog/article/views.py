@@ -82,7 +82,7 @@ def article_list(request):
     #     else:
     #         article_list = ArticlePost.objects.all()
 
-    paginator = Paginator(article_list, 3)
+    paginator = Paginator(article_list, 7)
     page = request.GET.get('page')
     articles = paginator.get_page(page)
 
@@ -123,7 +123,7 @@ def article_create(request):
     # 判断用户是否提交数据
     if request.method == "POST":
         # 将提交的数据赋值到表单实例中
-        article_post_form = ArticlePostForm(data=request.POST)
+        article_post_form = ArticlePostForm(request.POST, request.FILES)
         # 判断提交的数据是否满足模型的要求
         if article_post_form.is_valid():
             # 保存数据但不提交到数据库
@@ -178,7 +178,7 @@ def article_update(request, id):
     if request.user != article.author:
         return HttpResponse("sorry, 你无权修改这篇文章。")
     if request.method == "POST":
-        article_post_form = ArticlePostForm(data=request.POST)
+        article_post_form = ArticlePostForm(request.POST, request.FILES)
         # 判断是否满足模型要求
         if article_post_form.is_valid():
             article.title = request.POST['title']
@@ -187,6 +187,11 @@ def article_update(request, id):
                 article.column = ArticleColumn.objects.get(id=request.POST['column'])
             else:
                 article.column = None
+
+            if request.FILES.get('avatar'):
+                article.avatar = request.FILES.get('avatar')
+            
+            article.tags.set(*request.POST.get('tags').split(','), clear=True)
             article.save()
             # 返回id
             return redirect("article:article_detail", id=id)
@@ -196,7 +201,7 @@ def article_update(request, id):
     else:
         article_post_form = ArticlePostForm()
         columns = ArticleColumn.objects.all()
-        context = { 'article': article, 'article_post_form':article_post_form, 'columns': columns } 
+        context = { 'article': article, 'article_post_form':article_post_form, 'columns': columns, 'tags': ','.join([x for x in article.tags.names()]) } 
         return render(request, 'article/update.html', context)
 
 

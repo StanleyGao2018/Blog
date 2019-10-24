@@ -5,8 +5,12 @@
     <div class="row">
         <div class="col-12">
             <br>
-            <form method="POST"a ction=".">
+            <form method="POST" action="." enctype="multipart/form-data">
                 {% csrf_token %}
+                <div class="form-group">
+                    <label for="avatar">标题图</label>
+                    <input type="file" class="form-control-file" name="avatar" id="avatar">
+                </div>
                 <div class="form-group">
                     <label for="title">文章标题</label>
                     <input type="text" class="form-control" id="title" name="title" value="{{ article.title }}">
@@ -25,6 +29,11 @@
                             </option>
                         {% endfor %}
                     </select>
+                </div>
+                <!-- 文章标签 -->
+                <div class="form-group">
+                    <label for="tags">标签</label>
+                    <input type="text" class="form-control col-3" name="tags" id="tags" value="{{ tags }}">
                 </div>
                 <div class="form-group">
                     <label for="body">文章正文</label>
