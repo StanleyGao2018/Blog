@@ -9,7 +9,6 @@
 
 <!-- 写入content -->
 {% block content %}
-
 <!-- 文章详情 -->
 <div class="container">
     <div class="row">
@@ -41,7 +40,11 @@
                                     我也要发言:
                                 </strong>
                             </label>
-                            <textarea name="body" id="body" rows="2" class="form-control" type="text"></textarea>
+                            <!-- <textarea name="body" id="body" rows="2" class="form-control" type="text"></textarea> -->
+                            <div>
+                                {{ comment_form.media }}
+                                {{ comment_form.body }}
+                            </div>
                         </div>
                         <button type="submit" class="btn btn-primary">发送</button>
                     </form>
@@ -67,7 +70,7 @@
                             {{ comment.created|date:"Y-m-d H:i:s"}}
                         </span>时说:
                     </p>
-                    <pre style="font-family: inherit; font-size: 1em;">{{ comment.body }}</pre>
+                    <div>{{ comment.body|safe }}</div>
                 {% endfor %}
             </div>
         </div>
@@ -104,4 +107,11 @@
         })
     }
 </script>
+<script src="{% static 'ckeditor/ckeditor/plugins/prism/lib/prism/prism_patched.min.js' %}"></script>
+<link rel="stylesheet" href="{% static 'prism/prism.css' %}">
 {% endblock content %}
+{% block script %}
+<script>
+    $(".django-ckeditor-widget").removeAttr('style');
+</script>
+{% endblock script %}

@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'password_reset',
     'comment',
     'taggit',
+    'ckeditor',
 ]
 
 MIDDLEWARE = [
@@ -131,12 +132,42 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 # SMTP服务器，改为邮箱的smtp
 EMAIL_HOST = 'smtp.qq.com'
 # 改为自己的邮箱名
-EMAIL_HOST_USER = '2421688910@qq.com'
+EMAIL_HOST_USER = ''
 # 自己的邮箱密码
-EMAIL_HOST_PASSWORD = 'gao2421688910'
+EMAIL_HOST_PASSWORD = ''
 # 发送邮箱的端口
 EMAIL_PORT = 25
 # 是否使用TLS
 EMAIL_USE_TLS = True
 # 默认发件人
 DEFAULT_FROM_EMAIL = 'Stanley 的博客 <2421688910@qq.com>'
+
+CKEDITOR_CONFIGS = {
+    #django-ckeditor 默认使用default配置
+    'default':{
+        # 编辑器宽度自适应
+        'width':'auto',
+        'height':'250px',
+        # tab键转换空格
+        'tabSpace':4,
+        # 工具栏风格
+        'toolbar':'Custom',
+        #工具栏按钮
+        'toolbar_Custom':[
+            #表情 代码块
+            ['Smiley', 'CodeSnippet', 'Image'],
+            #字体风格
+            ['Bold', 'Italic', 'Underline', 'RemoveFormat', 'Blockquote'],
+            #字体颜色
+            ['TextColor', 'BGColor'],
+            #链接
+            ['Link', 'Unlink'],
+            #列表
+            ['NumberedList', 'BulletedList'],
+            #最大化
+            ['Maximize']
+        ],
+        #加入代码块插件
+        'extraPlugins': ','.join(['codesnippet', 'uploadimage', 'prism', 'widget', 'lineutils']),
+    }
+}

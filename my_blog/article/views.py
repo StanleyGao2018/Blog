@@ -11,7 +11,8 @@ from .models import ArticlePost, ArticleColumn
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator 
 from comment.models import Comment
-
+# 引入评论表单
+from comment.forms import CommentForm
 
 def article_list(request):
     #取出所有博客文章
@@ -98,6 +99,8 @@ def article_detail(request, id):
 
     # 取出评论
     comments = Comment.objects.filter(article=id)
+    # 引入频道论表单
+    comment_form = CommentForm()
     # 浏览量加一
     article.total_views += 1
     article.save(update_fields=['total_views'])
@@ -112,9 +115,8 @@ def article_detail(request, id):
         # 目录扩展
         'markdown.extensions.toc',
     ])
-    md.
     article.body = md.convert(article.body)
-    context = { 'article': article, 'toc': md.toc, 'comments': comments }
+    context = { 'article': article, 'toc': md.toc, 'comments': comments, 'comment_form':comment_form }
     return render(request, 'article/detail.html', context)
 
 
