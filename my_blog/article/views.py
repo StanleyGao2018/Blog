@@ -112,6 +112,7 @@ def article_detail(request, id):
         # 目录扩展
         'markdown.extensions.toc',
     ])
+    md.
     article.body = md.convert(article.body)
     context = { 'article': article, 'toc': md.toc, 'comments': comments }
     return render(request, 'article/detail.html', context)
