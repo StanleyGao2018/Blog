@@ -99,14 +99,17 @@
                     <!-- 注脚 -->
                     <p>
                         <!-- 附加信息 -->
-                        <span style="color: green;">
-                            {{ article.total_views }} 浏览&nbsp;&nbsp;
+                        <span>
+                            <i class="fas fa-eye" style="color: lightblue;"></i>
+                            {{ article.total_views }} &nbsp;&nbsp;
                         </span>
-                        <span style="color: blue;">
-                            {{ article.created|date:'Y-m-d' }} 发布&nbsp;&nbsp;&nbsp;
+                        <span>
+                            <i class="fas fa-comments" style="color: yellowgreen;"></i>
+                            {{ article.comments.count }}&nbsp;&nbsp;&nbsp;
                         </span>
-                        <span style="color: darkred;">
-                            {{ article.update|date:'Y-m-d' }} 更新
+                        <span>
+                            <i class="fas fa-clock" style="color: pink;"></i>
+                            {{ article.created|date:'Y-m-d' }}
                         </span>
                     </p>
 

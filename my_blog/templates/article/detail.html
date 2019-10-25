@@ -75,11 +75,13 @@
             </div>
         </div>
 
-        <div class="col-3 mt-4">
-            <h4><strong>目录</strong></h4>
-            <hr>
-            <div>
-                {{ toc|safe}}
+        <div class="col-3 mt-4 sidebar" id="sidebar" >
+            <div class="sidebar__inner">
+                    <h4><strong>目录</strong></h4>
+                    <hr>
+                    <div>
+                        {{ toc|safe}}
+                    </div>
             </div>
         </div>
     </div>
@@ -114,4 +116,25 @@
 <script>
     $(".django-ckeditor-widget").removeAttr('style');
 </script>
+
+<!-- 引入粘性侧边栏 -->
+<script src="{% static 'sticky_sidebar\jquery.sticky-sidebar.min.js' %}"></script>
+<script type="text/javascript">
+    $('#sidebar').stickySidebar({
+        topSpacing: 20,
+        bottomSpacing: 20,
+    });
+</script>
+
+<style>
+        .sidebar{
+            will-change: min-height;
+        }
+        .sidebar__inner{
+            transform: translate(0, 0);
+            transform: translate3d(0, 0, 0);
+            will-change: position, transform;
+        }
+    </style>
 {% endblock script %}
+
