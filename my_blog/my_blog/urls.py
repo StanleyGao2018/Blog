@@ -30,5 +30,9 @@ urlpatterns = [
     path('password-reset/', include('password_reset.urls')),
     # 评论
     path('comment/', include('comment.urls', namespace='comment')),
+    # 通知
+    path('notifications/', include('notifications.urls', namespace='notifications')),
+    # notice
+    path('notice/', include('notice.urls', namespace='notice')),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
