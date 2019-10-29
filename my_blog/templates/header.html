@@ -7,10 +7,6 @@
         <!-- 导航入口 -->
         <div>
             <ul class="navbar-nav">
-                <!-- 写文章 -->
-                <li class="nav-item">
-                        <a class="nav-link" href="{% url 'article:article_create' %}">写文章</a> 
-                </li>
                 <!-- 返回文章列表 -->
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'article:article_list' %}">文章</a>
@@ -22,6 +18,7 @@
                             {{ user.username }}
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a href="{% url 'article:article_create' %}" class="dropdown-item">写文章</a>
                             <a href="{% url "userprofile:edit" user.id %}" class="dropdown-item">个人信息</a>
                             <a href="#" onclick="user_delete()" class="dropdown-item">删除用户</a>
                             <a href="{% url "userprofile:logout" %}" class="dropdown-item">退出登录</a>
