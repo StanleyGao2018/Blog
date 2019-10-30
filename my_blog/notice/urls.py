@@ -7,5 +7,5 @@ urlpatterns = [
     # 通知列表
     path('list/', views.CommentNoticeListView.as_view(), name='list'),
     # 更新通知状态
-    path('update/', views.CommentNoticeListView.as_view(), name='update'),
+    path('update/', views.CommentNoticeUpdateView.as_view(), name='update'),
 ]

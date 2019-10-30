@@ -12,17 +12,20 @@
     </div>
     <!-- 未读通知 -->
     <div class="row mt-2 ml-4">
-        {% for notice in notices %}
-            <li class="list-group-item" id="notice_link">
-                <a href="{% url "notice:update" %}?article_id={{ notice.target.id }}&notice_id={{ notice.id }}" target="_blank">
-                    <span style="color: darkgoldenrod;">
-                        {{ noticle.actor }}
-                    </span>
-                    在<span style="color: darkkhaki;">{{ notice.target }}</span> {{ notice.verb }}.
-                </a>
-                &nbsp;&nbsp;&nbsp;{{ notice.timestamp|date:"Y/m/d H:i" }}
-            </li>
-        {% endfor %}
+        <ul class="list-group">
+            {% for notice in notices %}
+                <li class="list-group-item" id="notice_link">
+                    <a href="{% url "notice:update" %}?article_id={{ notice.target.id }}&notice_id={{ notice.id }}#comment_elem_{{ notice.action_object.id }}" target="_blank">
+                        <span style="color: rgb(210, 10, 250);">
+                            {{ notice.actor }}
+                        </span>
+                        在<span style="color: darkkhaki;">{{ notice.target }}</span> {{ notice.verb }}.
+                    </a>
+                    &nbsp;&nbsp;&nbsp;{{ notice.timestamp|date:"Y/m/d H:i" }}
+                </li>
+            {% endfor %}
+        </ul>
+        
     </div>
 </div>
 
